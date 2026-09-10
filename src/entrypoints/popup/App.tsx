@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { IconSettings, IconSparkles } from '@/components/icons';
 import { Button, Card, ToastProvider, useToast } from '@/components/ui';
 import { useProfileSnapshot } from '@/hooks/use-profile';
@@ -8,6 +9,8 @@ import {
   getQuickCopyValue,
   QUICK_COPY_ACTIONS,
 } from '@/lib/profile';
+import { requestAutofill, requestPageScan } from '@/lib/messaging';
+import type { PageScanSummary } from '@/lib/site';
 import { DASHBOARD_ROUTES } from '@/navigation/routes';
 import { formatGreeting } from '@/utils/greeting';
 import { openDashboard } from '@/utils/open-dashboard';
@@ -16,13 +19,41 @@ function PopupView() {
   const { profile } = useProfileSnapshot();
   const { showToast } = useToast();
   const greeting = formatGreeting(getDisplayName(profile));
+  const [scan, setScan] = useState<PageScanSummary | null>(null);
+  const [autofilling, setAutofilling] = useState(false);
+
+  useEffect(() => {
+    void requestPageScan().then(setScan);
+  }, []);
 
   const onCopy = async (label: string, value: string) => {
     const copied = await copyToClipboard(value);
     if (copied) {
-      showToast(`${label} copied`);
+      showToast(`✓ ${label} copied`);
     }
   };
+
+  const onAutofill = async () => {
+    setAutofilling(true);
+    const result = await requestAutofill();
+    setAutofilling(false);
+
+    if (!result) {
+      showToast('Open a job application page first');
+      return;
+    }
+
+    if (!result.ok) {
+      showToast(result.error ?? 'Autofill failed');
+      return;
+    }
+
+    showToast(`Filled ${result.filled.length} fields`);
+    void requestPageScan().then(setScan);
+  };
+
+  const detected = Boolean(scan?.detected);
+  const fillable = scan?.high ?? 0;
 
   return (
     <div className="flex min-h-[520px] flex-col bg-canvas">
@@ -49,15 +80,39 @@ function PopupView() {
         </p>
 
         <Card className="mt-4" padding="sm">
-          <p className="text-xs font-medium text-ink-muted">Application detected</p>
-          <p className="mt-2 text-sm text-ink">No application detected.</p>
-          <p className="mt-1 text-xs text-ink-subtle">
-            You can still use Quick Copy and the dashboard.
+          <p className="text-xs font-medium text-ink-muted">
+            Application detected
           </p>
-          <Button className="mt-3 w-full" disabled>
-            <IconSparkles className="h-4 w-4" />
-            Autofill
-          </Button>
+          {detected ? (
+            <>
+              <p className="mt-2 text-sm text-ink">
+                {scan?.title || 'Application form'}
+              </p>
+              <p className="mt-1 text-xs text-ink-subtle">
+                {scan?.total ?? 0} fields detected
+                {fillable > 0 ? ` · ${fillable} high confidence` : ''}
+              </p>
+              <Button
+                className="mt-3 w-full"
+                disabled={autofilling || fillable === 0}
+                onClick={() => void onAutofill()}
+              >
+                <IconSparkles className="h-4 w-4" />
+                {autofilling ? 'Filling…' : 'Autofill'}
+              </Button>
+            </>
+          ) : (
+            <>
+              <p className="mt-2 text-sm text-ink">No application detected.</p>
+              <p className="mt-1 text-xs text-ink-subtle">
+                You can still use Quick Copy and the dashboard.
+              </p>
+              <Button className="mt-3 w-full" disabled>
+                <IconSparkles className="h-4 w-4" />
+                Autofill
+              </Button>
+            </>
+          )}
         </Card>
 
         <div className="mt-5">
@@ -74,7 +129,9 @@ function PopupView() {
                   size="sm"
                   disabled={!hasValue}
                   title={
-                    hasValue ? `Copy ${action.label}` : 'Add this in your profile first'
+                    hasValue
+                      ? `Copy ${action.label}`
+                      : 'Add this in your profile first'
                   }
                   onClick={() => void onCopy(action.label, value)}
                 >

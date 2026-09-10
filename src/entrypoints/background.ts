@@ -1,3 +1,3 @@
 export default defineBackground(() => {
-  // Coordinates popup, dashboard, and future content-script messaging.
+  // Reserved for cross-context coordination as features grow.
 });

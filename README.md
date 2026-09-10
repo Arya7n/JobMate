@@ -6,21 +6,28 @@ V1 is local-first: profile data, resumes, and application history stay on your d
 
 ## Current status
 
-**Phase 2** is in place: typed local storage, a full profile editor, and save/load on-device. Resume files, autofill, and application tracking are not implemented yet.
+**V1 complete** for local use:
+
+- Professional profile editor with typed on-device storage
+- Resume manager (metadata in `chrome.storage`, files in IndexedDB)
+- Field detection + confidence-based autofill content script
+- Application tracker and dashboard stats
+- Quick Copy from the popup
+- Privacy-focused settings
 
 ## Architecture
 
 ```
 src/
-├── entrypoints/        Popup, dashboard page, background service worker
-├── pages/              Dashboard views (Overview, Profile, Resumes, Applications, Settings)
+├── entrypoints/        Popup, dashboard, background, content script
+├── pages/              Dashboard views
 ├── components/ui/      Shared design system
-├── lib/                Domain modules (storage, profile, resumes, applications, autofill, …)
+├── lib/                Domain modules (storage, profile, resumes, detection, autofill, …)
 ├── navigation/         Dashboard hash routing
 └── assets/             Global styles and design tokens
 ```
 
-Business logic lives under `src/lib`. React components render UI and call typed helpers. Profile read/write goes through `getProfile` / `saveProfile` — never `chrome.storage` directly.
+Business logic lives under `src/lib`. React components call typed helpers such as `getProfile`, `saveResumeFromFile`, and `getApplications` — never `chrome.storage` directly.
 
 ## Development
 
@@ -29,13 +36,19 @@ npm install
 npm run dev
 ```
 
-`npm run dev` builds the extension into `.output/chrome-mv3` and can open a Chrome instance with JobMate loaded.
-
 ```bash
 npm run compile   # TypeScript check
-npm run test      # Profile/storage unit tests
+npm run test      # Unit tests
 npm run build     # Production build → .output/chrome-mv3
 ```
+
+### Autofill fixture
+
+After loading the extension, open:
+
+`chrome-extension://<extension-id>/fixture-application.html`
+
+Or serve `public/fixture-application.html` and use Autofill from the popup / on-page panel.
 
 ## Load in Chrome
 
@@ -45,8 +58,12 @@ npm run build     # Production build → .output/chrome-mv3
 4. Click **Load unpacked**.
 5. Select the `jobMate/.output/chrome-mv3` folder.
 
-Pin JobMate from the puzzle-piece menu. The toolbar icon opens the popup. **Open Dashboard** (or the extension’s Options page) opens the full dashboard in a tab.
+Pin JobMate from the puzzle-piece menu. The toolbar icon opens the popup. **Open Dashboard** (or Options) opens the full dashboard.
 
 ## Permissions
 
-The extension requests only `storage`. Host access is not requested until autofill ships.
+- `storage` — profile, resume metadata, applications, settings
+- `tabs`, `scripting`, `activeTab` — popup ↔ page autofill messaging
+- Host access to `http://*/*` and `https://*/*` — detect and fill application forms on career sites
+
+Page contents and profile data never leave your device. Passwords are never filled.

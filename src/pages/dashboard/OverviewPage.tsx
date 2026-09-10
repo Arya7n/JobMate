@@ -1,12 +1,36 @@
+import { useEffect, useState } from 'react';
 import { PageHeader } from '@/components/layout/PageHeader';
-import { Badge, Card, CardDescription, CardHeader, CardTitle } from '@/components/ui';
+import {
+  Badge,
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui';
 import { useProfileSnapshot } from '@/hooks/use-profile';
 import { getProfileCompletion } from '@/lib/profile';
+import {
+  getApplicationStats,
+  getApplications,
+  subscribeApplications,
+} from '@/lib/storage';
+import type { JobApplication } from '@/lib/applications';
 import { DASHBOARD_ROUTES, dashboardHash } from '@/navigation/routes';
 
 export function OverviewPage() {
   const { profile, status } = useProfileSnapshot();
+  const [applications, setApplications] = useState<JobApplication[]>([]);
   const completion = status === 'ready' ? getProfileCompletion(profile) : 0;
+  const stats = getApplicationStats(applications);
+
+  useEffect(() => {
+    void getApplications().then((result) => {
+      if (result.ok) {
+        setApplications(result.data);
+      }
+    });
+    return subscribeApplications(setApplications);
+  }, []);
 
   return (
     <div>
@@ -52,15 +76,27 @@ export function OverviewPage() {
           <CardHeader>
             <div>
               <CardTitle>Applications</CardTitle>
-              <CardDescription>Nothing tracked yet.</CardDescription>
+              <CardDescription>
+                {stats.total === 0
+                  ? 'Nothing tracked yet.'
+                  : `${stats.total} total in your pipeline.`}
+              </CardDescription>
             </div>
           </CardHeader>
           <dl className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
-            <Stat label="Total" value="0" />
-            <Stat label="Applied" value="0" />
-            <Stat label="Interviews" value="0" />
-            <Stat label="Offers" value="0" />
+            <Stat label="Total" value={String(stats.total)} />
+            <Stat label="Applied" value={String(stats.applied)} />
+            <Stat label="Interviews" value={String(stats.interviews)} />
+            <Stat label="Offers" value={String(stats.offers)} />
           </dl>
+          <p className="mt-3 text-xs text-ink-subtle">
+            <a
+              href={dashboardHash(DASHBOARD_ROUTES.applications)}
+              className="text-ink underline-offset-2 hover:underline"
+            >
+              Manage applications
+            </a>
+          </p>
         </Card>
       </div>
     </div>

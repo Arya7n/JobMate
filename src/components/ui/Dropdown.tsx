@@ -68,6 +68,7 @@ export function Dropdown({
             'absolute top-full z-20 mt-1 min-w-40 rounded-md border border-border bg-surface p-1 shadow-sm',
             align === 'right' ? 'right-0' : 'left-0',
           )}
+          onClick={() => setOpen(false)}
         >
           {children}
         </div>

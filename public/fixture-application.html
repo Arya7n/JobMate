@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Software Engineer Application — JobMate Fixture</title>
+    <style>
+      body {
+        font-family: "Segoe UI", sans-serif;
+        max-width: 640px;
+        margin: 40px auto;
+        padding: 0 16px;
+        color: #161513;
+      }
+      label {
+        display: block;
+        margin: 12px 0 4px;
+        font-size: 13px;
+      }
+      input,
+      textarea,
+      select {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 8px 10px;
+        border: 1px solid #d0cdc4;
+        border-radius: 6px;
+      }
+      h1 {
+        font-size: 22px;
+      }
+      .row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Software Engineer Application</h1>
+    <p>Fixture page for JobMate autofill development.</p>
+    <form>
+      <div class="row">
+        <div>
+          <label for="firstName">First name</label>
+          <input id="firstName" name="firstName" autocomplete="given-name" />
+        </div>
+        <div>
+          <label for="lastName">Last name</label>
+          <input id="lastName" name="lastName" autocomplete="family-name" />
+        </div>
+      </div>
+      <label for="email">Email address</label>
+      <input id="email" name="emailAddress" type="email" autocomplete="email" />
+      <label for="phone">Phone number</label>
+      <input id="phone" name="phoneNumber" type="tel" autocomplete="tel" />
+      <label for="linkedin">LinkedIn URL</label>
+      <input id="linkedin" name="linkedin" />
+      <label for="github">GitHub</label>
+      <input id="github" name="githubProfile" />
+      <label for="city">City</label>
+      <input id="city" name="city" autocomplete="address-level2" />
+      <label for="portfolio">Portfolio</label>
+      <input id="portfolio" name="portfolioUrl" />
+      <label for="summary">Professional summary</label>
+      <textarea id="summary" name="summary" rows="4"></textarea>
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" />
+    </form>
+  </body>
+</html>
