@@ -1,3 +1,5 @@
+export const PROFILE_SCHEMA_VERSION = 1 as const;
+
 export interface PersonalInfo {
   firstName: string;
   middleName: string;
@@ -42,6 +44,7 @@ export interface ExperienceEntry {
 }
 
 export interface Profile {
+  version: typeof PROFILE_SCHEMA_VERSION;
   personal: PersonalInfo;
   links: ProfessionalLinks;
   education: EducationEntry[];

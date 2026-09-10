@@ -1,19 +1,28 @@
 import { IconSettings, IconSparkles } from '@/components/icons';
-import { Button, Card, ToastProvider } from '@/components/ui';
+import { Button, Card, ToastProvider, useToast } from '@/components/ui';
+import { useProfileSnapshot } from '@/hooks/use-profile';
 import { APP_NAME } from '@/lib/app-meta';
+import { copyToClipboard } from '@/lib/clipboard/copy';
+import {
+  getDisplayName,
+  getQuickCopyValue,
+  QUICK_COPY_ACTIONS,
+} from '@/lib/profile';
 import { DASHBOARD_ROUTES } from '@/navigation/routes';
-import { getGreeting } from '@/utils/greeting';
+import { formatGreeting } from '@/utils/greeting';
 import { openDashboard } from '@/utils/open-dashboard';
 
-const QUICK_COPY_ACTIONS = [
-  { id: 'linkedin', label: 'LinkedIn' },
-  { id: 'github', label: 'GitHub' },
-  { id: 'email', label: 'Email' },
-  { id: 'phone', label: 'Phone' },
-] as const;
-
 function PopupView() {
-  const greeting = getGreeting();
+  const { profile } = useProfileSnapshot();
+  const { showToast } = useToast();
+  const greeting = formatGreeting(getDisplayName(profile));
+
+  const onCopy = async (label: string, value: string) => {
+    const copied = await copyToClipboard(value);
+    if (copied) {
+      showToast(`${label} copied`);
+    }
+  };
 
   return (
     <div className="flex min-h-[520px] flex-col bg-canvas">
@@ -54,17 +63,25 @@ function PopupView() {
         <div className="mt-5">
           <p className="mb-2 text-xs font-medium text-ink-muted">Quick Copy</p>
           <div className="grid grid-cols-2 gap-2">
-            {QUICK_COPY_ACTIONS.map((action) => (
-              <Button
-                key={action.id}
-                variant="secondary"
-                size="sm"
-                disabled
-                title="Add this in your profile first"
-              >
-                {action.label}
-              </Button>
-            ))}
+            {QUICK_COPY_ACTIONS.map((action) => {
+              const value = getQuickCopyValue(profile, action.id);
+              const hasValue = value.length > 0;
+
+              return (
+                <Button
+                  key={action.id}
+                  variant="secondary"
+                  size="sm"
+                  disabled={!hasValue}
+                  title={
+                    hasValue ? `Copy ${action.label}` : 'Add this in your profile first'
+                  }
+                  onClick={() => void onCopy(action.label, value)}
+                >
+                  {action.label}
+                </Button>
+              );
+            })}
           </div>
         </div>
       </div>

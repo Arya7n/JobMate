@@ -9,3 +9,4 @@ export { ToastProvider, useToast } from './Toast';
 export { EmptyState } from './EmptyState';
 export { Tabs } from './Tabs';
 export { Dropdown, DropdownItem } from './Dropdown';
+export { Checkbox } from './Checkbox';

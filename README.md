@@ -6,7 +6,7 @@ V1 is local-first: profile data, resumes, and application history stay on your d
 
 ## Current status
 
-**Phase 1** is in place: WXT + React + TypeScript + Tailwind, Manifest V3, popup, dashboard navigation, and the design system. Profile editing, resume storage, autofill, and application tracking are intentionally not implemented yet.
+**Phase 2** is in place: typed local storage, a full profile editor, and save/load on-device. Resume files, autofill, and application tracking are not implemented yet.
 
 ## Architecture
 
@@ -20,7 +20,7 @@ src/
 └── assets/             Global styles and design tokens
 ```
 
-Business logic lives under `src/lib`. React components render UI and call typed helpers. Storage will be wrapped so UI never talks to `chrome.storage` directly.
+Business logic lives under `src/lib`. React components render UI and call typed helpers. Profile read/write goes through `getProfile` / `saveProfile` — never `chrome.storage` directly.
 
 ## Development
 
@@ -33,6 +33,7 @@ npm run dev
 
 ```bash
 npm run compile   # TypeScript check
+npm run test      # Profile/storage unit tests
 npm run build     # Production build → .output/chrome-mv3
 ```
 
@@ -48,4 +49,4 @@ Pin JobMate from the puzzle-piece menu. The toolbar icon opens the popup. **Open
 
 ## Permissions
 
-Phase 1 requests only `storage`. Host access is not requested until autofill ships.
+The extension requests only `storage`. Host access is not requested until autofill ships.

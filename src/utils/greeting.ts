@@ -11,3 +11,9 @@ export function getGreeting(date: Date = new Date()): string {
 
   return 'Good evening';
 }
+
+export function formatGreeting(name?: string, date: Date = new Date()): string {
+  const greeting = getGreeting(date);
+  const trimmed = name?.trim();
+  return trimmed && trimmed.length > 0 ? `${greeting}, ${trimmed}` : greeting;
+}

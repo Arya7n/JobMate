@@ -1,7 +1,13 @@
 import { PageHeader } from '@/components/layout/PageHeader';
 import { Badge, Card, CardDescription, CardHeader, CardTitle } from '@/components/ui';
+import { useProfileSnapshot } from '@/hooks/use-profile';
+import { getProfileCompletion } from '@/lib/profile';
+import { DASHBOARD_ROUTES, dashboardHash } from '@/navigation/routes';
 
 export function OverviewPage() {
+  const { profile, status } = useProfileSnapshot();
+  const completion = status === 'ready' ? getProfileCompletion(profile) : 0;
+
   return (
     <div>
       <PageHeader
@@ -15,16 +21,30 @@ export function OverviewPage() {
             <div>
               <CardTitle>Profile completion</CardTitle>
               <CardDescription>
-                Fill in your profile to unlock faster autofill.
+                {completion === 0
+                  ? 'Fill in your profile to unlock faster autofill.'
+                  : 'Keep adding details to improve autofill coverage.'}
               </CardDescription>
             </div>
-            <Badge>0%</Badge>
+            <Badge tone={completion >= 80 ? 'success' : 'neutral'}>
+              {completion}%
+            </Badge>
           </CardHeader>
           <div className="h-1.5 overflow-hidden rounded-full bg-surface-muted">
-            <div className="h-full w-0 rounded-full bg-accent" />
+            <div
+              className="h-full rounded-full bg-accent transition-[width]"
+              style={{ width: `${completion}%` }}
+            />
           </div>
           <p className="mt-3 text-xs text-ink-subtle">
-            Personal details, links, education, experience, and skills will count toward this score.
+            Counts name, email, phone, location, a professional link, education,
+            experience, and skills.{' '}
+            <a
+              href={dashboardHash(DASHBOARD_ROUTES.profile)}
+              className="text-ink underline-offset-2 hover:underline"
+            >
+              Edit profile
+            </a>
           </p>
         </Card>
 

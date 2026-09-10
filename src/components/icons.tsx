@@ -123,3 +123,21 @@ export function IconShield(props: IconProps) {
     </Icon>
   );
 }
+
+export function IconX(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M6 6l12 12M18 6L6 18" />
+    </Icon>
+  );
+}
+
+export function IconTrash(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M4 7h16" />
+      <path d="M9 7V5h6v2" />
+      <path d="M7 7l.8 12h8.4L17 7" />
+    </Icon>
+  );
+}
