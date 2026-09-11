@@ -35,7 +35,7 @@ export function Modal({ open, title, children, footer, onClose }: ModalProps) {
       <button
         type="button"
         aria-label="Close dialog"
-        className="absolute inset-0 bg-ink/30"
+        className="absolute inset-0 bg-ink/25 backdrop-blur-[2px]"
         onClick={onClose}
       />
       <div
@@ -43,7 +43,7 @@ export function Modal({ open, title, children, footer, onClose }: ModalProps) {
         aria-modal="true"
         aria-labelledby="jobmate-modal-title"
         className={cn(
-          'relative z-10 w-full max-w-md rounded-lg border border-border bg-surface p-5 shadow-lg',
+          'relative z-10 w-full max-w-md rounded-xl border border-border bg-surface p-5 shadow-float',
         )}
       >
         <div className="mb-3 flex items-start justify-between gap-3">

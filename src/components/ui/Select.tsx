@@ -24,8 +24,8 @@ export function Select({
       <select
         id={inputId}
         className={cn(
-          'h-9 w-full rounded-md border border-border bg-surface px-3 text-sm text-ink',
-          'outline-none transition-colors focus:border-border-strong focus:ring-2 focus:ring-ink/10',
+          'h-9 w-full rounded-lg border border-border bg-surface px-3 text-sm text-ink',
+          'outline-none transition-colors focus:border-accent/40 focus:ring-2 focus:ring-accent/15',
           'disabled:cursor-not-allowed disabled:bg-surface-muted disabled:text-ink-muted',
           className,
         )}

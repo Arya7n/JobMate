@@ -65,7 +65,7 @@ export function Dropdown({
           id={menuId}
           role="menu"
           className={cn(
-            'absolute top-full z-20 mt-1 min-w-40 rounded-md border border-border bg-surface p-1 shadow-sm',
+            'absolute top-full z-20 mt-1 min-w-40 rounded-xl border border-border bg-surface p-1 shadow-card',
             align === 'right' ? 'right-0' : 'left-0',
           )}
           onClick={() => setOpen(false)}
@@ -88,7 +88,7 @@ export function DropdownItem({
     <button
       type="button"
       role="menuitem"
-      className="flex w-full items-center rounded-sm px-2.5 py-1.5 text-left text-sm text-ink hover:bg-surface-muted"
+      className="flex w-full items-center rounded-lg px-2.5 py-1.5 text-left text-sm text-ink hover:bg-surface-muted"
       onClick={onSelect}
     >
       {children}

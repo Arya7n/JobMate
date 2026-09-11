@@ -27,7 +27,7 @@ export function Checkbox({
         type="checkbox"
         checked={checked}
         className={cn(
-          'h-4 w-4 rounded border-border text-ink accent-ink',
+          'h-4 w-4 rounded border-border text-accent accent-accent',
           className,
         )}
         onChange={(event) => onCheckedChange(event.target.checked)}

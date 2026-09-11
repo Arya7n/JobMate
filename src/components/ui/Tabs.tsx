@@ -37,7 +37,7 @@ export function Tabs<Id extends string>({
               className={cn(
                 '-mb-px border-b-2 px-3 py-2 text-sm transition-colors',
                 selected
-                  ? 'border-ink font-medium text-ink'
+                  ? 'border-accent font-medium text-accent'
                   : 'border-transparent text-ink-muted hover:text-ink',
               )}
               onClick={() => onChange(tab.id)}

@@ -46,7 +46,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
           <div
             key={toast.id}
             role="status"
-            className="pointer-events-auto flex items-center gap-2 rounded-md border border-border bg-surface px-3 py-2 text-sm text-ink shadow-sm"
+            className="pointer-events-auto flex items-center gap-2 rounded-lg border border-border bg-surface px-3.5 py-2.5 text-sm text-ink shadow-float"
           >
             <IconCheck className="h-4 w-4 text-success" />
             {toast.text}
