@@ -32,10 +32,10 @@ export function AutofillPanel({
           '"Segoe UI", ui-sans-serif, system-ui, -apple-system, sans-serif',
         color: '#161513',
         background: '#ffffff',
-        border: '1px solid #e5e3dc',
-        borderRadius: '10px',
-        boxShadow: '0 10px 30px rgba(22, 21, 19, 0.12)',
-        padding: '14px',
+        border: '1px solid #e6e2d8',
+        borderRadius: '16px',
+        boxShadow: '0 12px 40px rgba(22, 21, 19, 0.12)',
+        padding: '16px',
       }}
     >
       <div
@@ -43,17 +43,19 @@ export function AutofillPanel({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          marginBottom: '10px',
+          marginBottom: '12px',
         }}
       >
-        <strong style={{ fontSize: '13px' }}>✨ JobMate</strong>
+        <strong style={{ fontSize: '13px', letterSpacing: '-0.01em' }}>
+          JobMate
+        </strong>
         <button
           type="button"
           onClick={onClose}
           style={{
             border: 'none',
             background: 'transparent',
-            color: '#6e6b64',
+            color: '#6b6860',
             cursor: 'pointer',
             fontSize: '12px',
           }}
@@ -62,7 +64,16 @@ export function AutofillPanel({
         </button>
       </div>
 
-      <p style={{ margin: '0 0 4px', fontSize: '12px', color: '#6e6b64' }}>
+      <p
+        style={{
+          margin: '0 0 4px',
+          fontSize: '11px',
+          fontWeight: 600,
+          letterSpacing: '0.04em',
+          textTransform: 'uppercase',
+          color: '#1f6b62',
+        }}
+      >
         Application detected
       </p>
       <p style={{ margin: '0 0 10px', fontSize: '13px' }}>
@@ -78,7 +89,7 @@ export function AutofillPanel({
             display: 'grid',
             gap: '4px',
             fontSize: '12px',
-            color: '#215852',
+            color: '#1f6b62',
           }}
         >
           {scan.labels.map((label) => (
@@ -116,8 +127,8 @@ export function AutofillPanel({
           width: '100%',
           height: '36px',
           border: 'none',
-          borderRadius: '8px',
-          background: '#161513',
+          borderRadius: '10px',
+          background: '#1f6b62',
           color: '#ffffff',
           fontSize: '13px',
           fontWeight: 600,

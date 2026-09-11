@@ -14,6 +14,7 @@ import type { PageScanSummary } from '@/lib/site';
 import { DASHBOARD_ROUTES } from '@/navigation/routes';
 import { formatGreeting } from '@/utils/greeting';
 import { openDashboard } from '@/utils/open-dashboard';
+import { cn } from '@/utils/cn';
 
 function PopupView() {
   const { profile } = useProfileSnapshot();
@@ -60,9 +61,11 @@ function PopupView() {
 
   return (
     <div className="flex min-h-[520px] flex-col bg-canvas">
-      <header className="flex items-center justify-between border-b border-border px-4 py-3">
-        <div className="flex items-center gap-2">
-          <img src="/icon-32.png" alt="" className="h-5 w-5 rounded-[4px]" />
+      <header className="flex items-center justify-between border-b border-border bg-surface/70 px-4 py-3 backdrop-blur">
+        <div className="flex items-center gap-2.5">
+          <span className="flex h-7 w-7 items-center justify-center rounded-md bg-accent-soft">
+            <img src="/icon-32.png" alt="" className="h-4 w-4 rounded-[3px]" />
+          </span>
           <span className="text-sm font-medium tracking-tight">{APP_NAME}</span>
         </div>
         <Button
@@ -77,18 +80,27 @@ function PopupView() {
       </header>
 
       <div className="flex flex-1 flex-col px-4 py-4">
-        <p className="text-base font-medium tracking-tight">{greeting}</p>
+        <p className="text-[17px] font-medium tracking-tight">{greeting}</p>
         <p className="mt-1 text-xs text-ink-muted">
           Your job application assistant.
         </p>
 
         <Card className="mt-4" padding="sm">
-          <p className="text-xs font-medium text-ink-muted">
-            {detected ? 'Application detected' : 'Current page'}
-          </p>
+          <div className="flex items-center justify-between gap-2">
+            <p className="text-xs font-medium text-ink-muted">
+              {detected ? 'Application detected' : 'Current page'}
+            </p>
+            <span
+              className={cn(
+                'h-1.5 w-1.5 rounded-full',
+                detected ? 'bg-accent' : 'bg-border-strong',
+              )}
+              aria-hidden
+            />
+          </div>
           {detected ? (
             <>
-              <p className="mt-2 text-sm text-ink">
+              <p className="mt-2 text-sm font-medium text-ink">
                 {scan?.title || 'Application form'}
               </p>
               <p className="mt-1 text-xs text-ink-subtle">
@@ -107,7 +119,7 @@ function PopupView() {
           ) : (
             <>
               <p className="mt-2 text-sm text-ink">No application detected.</p>
-              <p className="mt-1 text-xs text-ink-subtle">
+              <p className="mt-1 text-xs leading-relaxed text-ink-subtle">
                 You can still use Quick Copy and the dashboard.
               </p>
               <Button className="mt-3 w-full" disabled>
@@ -146,10 +158,10 @@ function PopupView() {
         </div>
       </div>
 
-      <footer className="border-t border-border px-4 py-3">
+      <footer className="border-t border-border bg-surface/60 px-4 py-3">
         <button
           type="button"
-          className="text-sm text-ink-muted transition-colors hover:text-ink"
+          className="text-sm font-medium text-accent transition-colors hover:text-accent-hover"
           onClick={() => void openDashboard()}
         >
           Open Dashboard →
