@@ -258,6 +258,33 @@ export async function openResume(id: string): Promise<StorageResult<void>> {
   }
 }
 
+export async function getDefaultResume(): Promise<
+  StorageResult<{ record: ResumeRecord; blob: Blob }>
+> {
+  try {
+    const storeResult = await readStore();
+    if (!storeResult.ok) {
+      return storeResult;
+    }
+
+    const record =
+      storeResult.data.resumes.find((item) => item.isDefault) ??
+      storeResult.data.resumes[0];
+    if (!record) {
+      return { ok: false, error: new Error('No resume uploaded.') };
+    }
+
+    const blob = await getResumeBlob(record.id);
+    if (!blob) {
+      return { ok: false, error: new Error('Resume file is missing.') };
+    }
+
+    return { ok: true, data: { record, blob } };
+  } catch (error) {
+    return { ok: false, error: toError(error) };
+  }
+}
+
 export function subscribeResumes(
   listener: (resumes: ResumeRecord[]) => void,
 ): () => void {
@@ -273,6 +300,7 @@ export const resumeStorage = {
   setDefault: setDefaultResume,
   remove: deleteResume,
   open: openResume,
+  getDefault: getDefaultResume,
   subscribe: subscribeResumes,
 };
 

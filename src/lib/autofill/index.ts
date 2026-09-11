@@ -4,11 +4,12 @@ export {
   type FieldType,
   type ConfidenceLevel,
 } from './types';
-export { setNativeValue, getCurrentValue } from './set-value';
+export { setNativeValue, setNativeFile, getCurrentValue, fileMatchesAccept } from './set-value';
 export {
   buildFillPlan,
   executeFillPlan,
   autofillFields,
   type FillPlanItem,
   type FillResult,
+  type AutofillFiles,
 } from './fill';

@@ -10,6 +10,7 @@ function signals(partial: Partial<FieldSignals>): FieldSignals {
     label: '',
     autocomplete: '',
     type: 'text',
+    accept: '',
     surroundingText: '',
     ...partial,
   };
@@ -89,5 +90,50 @@ describe('classifyFieldSignals', () => {
     );
     expect(match.type).toBe('unknown');
     expect(match.score).toBe(0);
+  });
+
+  it('maps resume upload fields and document dropboxes', () => {
+    expect(
+      classifyFieldSignals(
+        signals({
+          type: 'file',
+          name: 'resume',
+          label: 'Resume / CV',
+          accept: '.pdf,.doc,.docx',
+        }),
+      ),
+    ).toMatchObject({ type: 'resume', confidence: 'high' });
+
+    expect(
+      classifyFieldSignals(
+        signals({
+          type: 'file',
+          accept: 'application/pdf',
+        }),
+      ),
+    ).toMatchObject({ type: 'resume', confidence: 'high' });
+  });
+
+  it('does not treat cover letters or photos as the resume', () => {
+    expect(
+      classifyFieldSignals(
+        signals({
+          type: 'file',
+          name: 'coverLetter',
+          label: 'Cover letter',
+          accept: '.pdf',
+        }),
+      ).type,
+    ).toBe('unknown');
+
+    expect(
+      classifyFieldSignals(
+        signals({
+          type: 'file',
+          name: 'photo',
+          accept: 'image/*',
+        }),
+      ).type,
+    ).toBe('unknown');
   });
 });

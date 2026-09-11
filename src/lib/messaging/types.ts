@@ -6,6 +6,7 @@ export const MESSAGE_TYPES = {
   scanUpdated: 'jobmate/scan-updated',
   autofill: 'jobmate/autofill',
   autofillResult: 'jobmate/autofill-result',
+  getDefaultResume: 'jobmate/get-default-resume',
 } as const;
 
 export type MessageType = (typeof MESSAGE_TYPES)[keyof typeof MESSAGE_TYPES];
@@ -17,7 +18,8 @@ export type ExtensionMessage =
   | {
       type: typeof MESSAGE_TYPES.autofillResult;
       payload: FillResult & { ok: boolean; error?: string };
-    };
+    }
+  | { type: typeof MESSAGE_TYPES.getDefaultResume };
 
 export function isExtensionMessage(value: unknown): value is ExtensionMessage {
   return (

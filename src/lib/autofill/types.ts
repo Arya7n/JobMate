@@ -19,6 +19,7 @@ export const FIELD_TYPES = [
   'fieldOfStudy',
   'company',
   'jobTitle',
+  'resume',
   'unknown',
 ] as const;
 

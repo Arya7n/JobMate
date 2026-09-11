@@ -53,6 +53,7 @@ export function getProfileValueForField(
       return latestExperience?.company ?? '';
     case 'jobTitle':
       return latestExperience?.jobTitle ?? '';
+    case 'resume':
     case 'unknown':
       return '';
   }

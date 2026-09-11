@@ -34,6 +34,22 @@
         grid-template-columns: 1fr 1fr;
         gap: 12px;
       }
+      .dropzone {
+        margin-top: 12px;
+        padding: 20px;
+        border: 1px dashed #d0cdc4;
+        border-radius: 8px;
+        text-align: center;
+        color: #6e6b64;
+        font-size: 13px;
+        position: relative;
+      }
+      .dropzone input[type='file'] {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        cursor: pointer;
+      }
     </style>
   </head>
   <body>
@@ -62,6 +78,17 @@
       <input id="city" name="city" autocomplete="address-level2" />
       <label for="portfolio">Portfolio</label>
       <input id="portfolio" name="portfolioUrl" />
+      <label>Resume / CV</label>
+      <div class="dropzone">
+        Drop resume here or click to upload
+        <input
+          id="resume"
+          name="resume"
+          type="file"
+          accept=".pdf,.doc,.docx,application/pdf"
+          aria-label="Resume"
+        />
+      </div>
       <label for="summary">Professional summary</label>
       <textarea id="summary" name="summary" rows="4"></textarea>
       <label for="password">Password</label>

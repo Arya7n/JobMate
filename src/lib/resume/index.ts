@@ -12,4 +12,6 @@ export {
   normalizeResumeStore,
   formatFileSize,
   fileTypeLabel,
+  extensionForMime,
+  resumeDownloadName,
 } from './normalize';

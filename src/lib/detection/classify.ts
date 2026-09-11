@@ -8,6 +8,7 @@ export interface FieldSignals {
   label: string;
   autocomplete: string;
   type: string;
+  accept: string;
   surroundingText: string;
 }
 
@@ -273,11 +274,6 @@ export function collectFieldSignals(
     labelText = parentLabel?.textContent ?? '';
   }
 
-  const surrounding =
-    element.parentElement?.textContent?.slice(0, 180) ??
-    element.closest('div, fieldset, section, form')?.textContent?.slice(0, 180) ??
-    '';
-
   return {
     name: element.getAttribute('name') ?? '',
     id: element.id ?? '',
@@ -289,8 +285,40 @@ export function collectFieldSignals(
       element instanceof HTMLInputElement
         ? element.type
         : element.tagName.toLowerCase(),
-    surroundingText: surrounding,
+    accept:
+      element instanceof HTMLInputElement
+        ? (element.getAttribute('accept') ?? '')
+        : '',
+    surroundingText: surroundingFor(element),
   };
+}
+
+function surroundingFor(
+  element: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement,
+): string {
+  const nearby =
+    element.parentElement?.textContent?.slice(0, 180) ??
+    element.closest('div, fieldset, section, form')?.textContent?.slice(0, 180) ??
+    '';
+
+  if (!(element instanceof HTMLInputElement) || element.type !== 'file') {
+    return nearby;
+  }
+
+  const dropzone = element.closest(
+    '[class*="drop"], [class*="upload"], [class*="resume"], [class*="file"], [data-testid*="resume"], [data-testid*="upload"]',
+  );
+
+  return [
+    element.getAttribute('aria-label') ?? '',
+    element.parentElement?.getAttribute('aria-label') ?? '',
+    dropzone?.textContent ?? '',
+    nearby,
+  ]
+    .join(' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 500);
 }
 
 function scoreAgainstCorpus(corpus: string, compacted: string): FieldMatch | null {
@@ -356,6 +384,82 @@ function fromInputType(type: string): FieldMatch | null {
   return null;
 }
 
+function acceptsDocument(accept: string): boolean {
+  const value = accept.toLowerCase();
+  if (!value.trim()) {
+    return false;
+  }
+  return (
+    value.includes('pdf') ||
+    value.includes('msword') ||
+    value.includes('officedocument') ||
+    value.includes('.doc') ||
+    value.includes('application/msword')
+  );
+}
+
+function isImageOnlyAccept(accept: string): boolean {
+  const tokens = accept
+    .toLowerCase()
+    .split(',')
+    .map((token) => token.trim())
+    .filter(Boolean);
+  if (tokens.length === 0) {
+    return false;
+  }
+  return tokens.every(
+    (token) =>
+      token.startsWith('image/') ||
+      token === '.png' ||
+      token === '.jpg' ||
+      token === '.jpeg' ||
+      token === '.gif' ||
+      token === '.webp' ||
+      token === '.svg',
+  );
+}
+
+function classifyFileInput(signals: FieldSignals): FieldMatch {
+  const corpus = normalizeSignal(
+    [
+      signals.name,
+      signals.id,
+      signals.placeholder,
+      signals.ariaLabel,
+      signals.label,
+      signals.surroundingText,
+    ].join(' '),
+  );
+
+  if (
+    /cover.?letter|writing.?sample|transcript|photo|headshot|avatar|profile.?picture|profile.?photo/.test(
+      corpus,
+    )
+  ) {
+    return { type: 'unknown', confidence: LOW, score: 0 };
+  }
+
+  if (isImageOnlyAccept(signals.accept)) {
+    return { type: 'unknown', confidence: LOW, score: 0 };
+  }
+
+  if (
+    /\bresume\b/.test(corpus) ||
+    /\bcv\b/.test(corpus) ||
+    /curriculum.?vitae/.test(corpus) ||
+    /resume.?upload/.test(corpus) ||
+    /upload.?resume/.test(corpus)
+  ) {
+    return { type: 'resume', confidence: HIGH, score: 97 };
+  }
+
+  if (acceptsDocument(signals.accept)) {
+    return { type: 'resume', confidence: HIGH, score: 90 };
+  }
+
+  return { type: 'resume', confidence: MEDIUM, score: 55 };
+}
+
 export function classifyFieldSignals(signals: FieldSignals): FieldMatch {
   if (
     signals.type === 'password' ||
@@ -366,6 +470,10 @@ export function classifyFieldSignals(signals: FieldSignals): FieldMatch {
     )
   ) {
     return { type: 'unknown', confidence: LOW, score: 0 };
+  }
+
+  if (signals.type === 'file') {
+    return classifyFileInput(signals);
   }
 
   const parts = [
@@ -438,10 +546,12 @@ export function isFillableElement(
 
   if (element instanceof HTMLInputElement) {
     const type = element.type.toLowerCase();
+    if (type === 'file') {
+      return !element.webkitdirectory;
+    }
     if (
       type === 'hidden' ||
       type === 'password' ||
-      type === 'file' ||
       type === 'submit' ||
       type === 'button' ||
       type === 'reset' ||
@@ -485,6 +595,7 @@ export function displayLabelForField(field: DetectedField): string {
     fieldOfStudy: 'Field of study',
     company: 'Company',
     jobTitle: 'Job title',
+    resume: 'Resume',
     unknown: 'Unknown',
   };
 

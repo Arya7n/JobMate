@@ -49,6 +49,9 @@ function PopupView() {
     }
 
     showToast(`Filled ${result.filled.length} fields`);
+    if (result.skipped.some((item) => item.reason === 'No resume uploaded')) {
+      showToast('Upload a resume in the dashboard to attach it');
+    }
     void requestPageScan().then(setScan);
   };
 
@@ -81,7 +84,7 @@ function PopupView() {
 
         <Card className="mt-4" padding="sm">
           <p className="text-xs font-medium text-ink-muted">
-            Application detected
+            {detected ? 'Application detected' : 'Current page'}
           </p>
           {detected ? (
             <>

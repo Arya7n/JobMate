@@ -63,7 +63,7 @@ export function AutofillPanel({
       </div>
 
       <p style={{ margin: '0 0 4px', fontSize: '12px', color: '#6e6b64' }}>
-        {scan.likelyApplication ? 'Application detected' : 'Form fields detected'}
+        Application detected
       </p>
       <p style={{ margin: '0 0 10px', fontSize: '13px' }}>
         {scan.total} fields found
@@ -100,6 +100,12 @@ export function AutofillPanel({
           {lastResult.skipped.length > 0
             ? ` · skipped ${lastResult.skipped.length}`
             : ''}
+        </p>
+      ) : null}
+
+      {lastResult?.skipped.some((item) => item.reason === 'No resume uploaded') ? (
+        <p style={{ margin: '0 0 10px', fontSize: '12px', color: '#8a6914' }}>
+          Upload a resume in the dashboard to attach it here.
         </p>
       ) : null}
 

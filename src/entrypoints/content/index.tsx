@@ -2,6 +2,7 @@ import ReactDOM from 'react-dom/client';
 import { autofillFields, type FillResult } from '@/lib/autofill';
 import { scanDocument } from '@/lib/detection';
 import { isExtensionMessage, MESSAGE_TYPES } from '@/lib/messaging';
+import { fileFromBase64, type DefaultResumeResponse } from '@/lib/resume/transfer';
 import { getProfile, getSettings } from '@/lib/storage';
 import { getPageScanSummary, type PageScanSummary } from '@/lib/site';
 import { AutofillPanel } from './AutofillPanel';
@@ -57,18 +58,40 @@ export default defineContentScript({
       );
     }
 
+    function showPanel() {
+      panelOpen = true;
+      ui.mount();
+      render();
+    }
+
+    function hidePanel() {
+      panelOpen = false;
+      render();
+    }
+
     function refreshScan() {
       latestScan = getPageScanSummary();
-      if (latestScan.detected && latestScan.high >= 1) {
-        panelOpen = true;
-        ui.mount();
+      if (latestScan.detected) {
+        showPanel();
+        return;
       }
-      render();
+      hidePanel();
     }
 
     async function runAutofill(): Promise<
       FillResult & { ok: boolean; error?: string }
     > {
+      latestScan = getPageScanSummary();
+      if (!latestScan.detected) {
+        return {
+          ok: false,
+          error: 'Not a job application page',
+          filled: [],
+          skipped: [],
+          planned: 0,
+        };
+      }
+
       const [profileResult, settingsResult] = await Promise.all([
         getProfile(),
         getSettings(),
@@ -86,10 +109,27 @@ export default defineContentScript({
 
       const settings = settingsResult.ok ? settingsResult.data : undefined;
       const fields = scanDocument();
-      const result = autofillFields(fields, profileResult.data, settings);
+      const resume = await loadResumeFile();
+      const result = autofillFields(fields, profileResult.data, settings, {
+        resume,
+      });
       lastResult = result;
       latestScan = getPageScanSummary();
       return { ok: true, ...result };
+    }
+
+    async function loadResumeFile(): Promise<File | undefined> {
+      try {
+        const response = (await browser.runtime.sendMessage({
+          type: MESSAGE_TYPES.getDefaultResume,
+        })) as DefaultResumeResponse;
+        if (!response?.ok) {
+          return undefined;
+        }
+        return fileFromBase64(response.base64, response.name, response.mimeType);
+      } catch {
+        return undefined;
+      }
     }
 
     browser.runtime.onMessage.addListener((message, _sender, sendResponse) => {
@@ -105,9 +145,9 @@ export default defineContentScript({
 
       if (message.type === MESSAGE_TYPES.autofill) {
         void runAutofill().then((result) => {
-          panelOpen = true;
-          ui.mount();
-          render();
+          if (result.ok) {
+            showPanel();
+          }
           sendResponse(result);
         });
         return true;
@@ -120,13 +160,17 @@ export default defineContentScript({
     const observer = new MutationObserver(() => {
       window.clearTimeout(debounce);
       debounce = window.setTimeout(() => {
-        const previous = latestScan.total;
+        const wasDetected = latestScan.detected;
         latestScan = getPageScanSummary();
-        if (latestScan.total !== previous && latestScan.detected) {
-          ui.mount();
-          panelOpen = true;
-          render();
+        if (latestScan.detected && !wasDetected) {
+          showPanel();
+          return;
         }
+        if (!latestScan.detected) {
+          hidePanel();
+          return;
+        }
+        render();
       }, 400);
     });
 

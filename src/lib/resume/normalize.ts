@@ -96,3 +96,27 @@ export function fileTypeLabel(mimeType: string): string {
   }
   return 'File';
 }
+
+export function extensionForMime(mimeType: string): string {
+  if (mimeType.includes('pdf')) {
+    return '.pdf';
+  }
+  if (mimeType.includes('wordprocessingml')) {
+    return '.docx';
+  }
+  if (mimeType.includes('msword')) {
+    return '.doc';
+  }
+  return '';
+}
+
+export function resumeDownloadName(
+  record: Pick<ResumeRecord, 'name' | 'mimeType'>,
+): string {
+  const ext = extensionForMime(record.mimeType);
+  const base = record.name.trim() || 'Resume';
+  if (ext && !base.toLowerCase().endsWith(ext)) {
+    return `${base}${ext}`;
+  }
+  return base;
+}

@@ -13,6 +13,7 @@ export {
   setDefaultResume,
   deleteResume,
   openResume,
+  getDefaultResume,
   subscribeResumes,
   resumeStorage,
 } from './resume-storage';
