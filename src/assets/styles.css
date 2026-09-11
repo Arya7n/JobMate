@@ -3,20 +3,26 @@
 @theme {
   --font-sans: "Segoe UI", ui-sans-serif, system-ui, -apple-system, sans-serif;
 
-  --color-canvas: #f6f5f2;
+  --color-canvas: #f4f2ec;
   --color-surface: #ffffff;
-  --color-surface-muted: #f1f0ec;
-  --color-border: #e5e3dc;
-  --color-border-strong: #d0cdc4;
+  --color-surface-muted: #f1efe8;
+  --color-border: #e6e2d8;
+  --color-border-strong: #cdc8bb;
   --color-ink: #161513;
-  --color-ink-muted: #6e6b64;
-  --color-ink-subtle: #9a978e;
-  --color-accent: #215852;
-  --color-accent-hover: #18443f;
-  --color-accent-soft: #e7f1ef;
+  --color-ink-muted: #6b6860;
+  --color-ink-subtle: #9a968c;
+  --color-accent: #1f6b62;
+  --color-accent-hover: #17554e;
+  --color-accent-soft: #e5f3f0;
   --color-success: #2d6a4f;
   --color-warning: #8a6914;
   --color-danger: #a33b2b;
+  --color-danger-soft: #f8ece9;
+
+  --shadow-card: 0 1px 2px rgb(22 21 19 / 0.04), 0 10px 28px rgb(22 21 19 / 0.05);
+  --shadow-float: 0 12px 40px rgb(22 21 19 / 0.12);
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
 }
 
 @layer base {
@@ -37,6 +43,11 @@
 
   #root {
     min-height: 100%;
+  }
+
+  ::selection {
+    background: var(--color-accent-soft);
+    color: var(--color-ink);
   }
 }
 
