@@ -50,22 +50,22 @@ export function OverviewPage() {
                   : 'Keep adding details to improve autofill coverage.'}
               </CardDescription>
             </div>
-            <Badge tone={completion >= 80 ? 'success' : 'neutral'}>
+            <Badge tone={completion >= 80 ? 'success' : 'accent'}>
               {completion}%
             </Badge>
           </CardHeader>
-          <div className="h-1.5 overflow-hidden rounded-full bg-surface-muted">
+          <div className="h-2 overflow-hidden rounded-full bg-surface-muted">
             <div
               className="h-full rounded-full bg-accent transition-[width]"
               style={{ width: `${completion}%` }}
             />
           </div>
-          <p className="mt-3 text-xs text-ink-subtle">
+          <p className="mt-4 text-xs leading-relaxed text-ink-subtle">
             Counts name, email, phone, location, a professional link, education,
             experience, and skills.{' '}
             <a
               href={dashboardHash(DASHBOARD_ROUTES.profile)}
-              className="text-ink underline-offset-2 hover:underline"
+              className="font-medium text-accent underline-offset-2 hover:underline"
             >
               Edit profile
             </a>
@@ -83,16 +83,16 @@ export function OverviewPage() {
               </CardDescription>
             </div>
           </CardHeader>
-          <dl className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
+          <dl className="grid grid-cols-2 gap-2 text-sm sm:grid-cols-4">
             <Stat label="Total" value={String(stats.total)} />
             <Stat label="Applied" value={String(stats.applied)} />
             <Stat label="Interviews" value={String(stats.interviews)} />
             <Stat label="Offers" value={String(stats.offers)} />
           </dl>
-          <p className="mt-3 text-xs text-ink-subtle">
+          <p className="mt-4 text-xs text-ink-subtle">
             <a
               href={dashboardHash(DASHBOARD_ROUTES.applications)}
-              className="text-ink underline-offset-2 hover:underline"
+              className="font-medium text-accent underline-offset-2 hover:underline"
             >
               Manage applications
             </a>
@@ -105,8 +105,10 @@ export function OverviewPage() {
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div>
-      <dt className="text-xs text-ink-subtle">{label}</dt>
+    <div className="rounded-lg bg-surface-muted/80 px-3 py-2.5">
+      <dt className="text-[11px] font-medium uppercase tracking-wide text-ink-subtle">
+        {label}
+      </dt>
       <dd className="mt-1 text-lg font-medium tracking-tight text-ink">{value}</dd>
     </div>
   );

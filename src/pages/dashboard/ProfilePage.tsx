@@ -103,7 +103,7 @@ export function ProfilePage() {
         />
       </div>
 
-      <div className="sticky bottom-0 z-10 mt-6 -mx-4 border-t border-border bg-canvas/95 px-4 py-3 backdrop-blur md:-mx-8 md:px-8">
+      <div className="sticky bottom-0 z-10 mt-6 -mx-4 border-t border-border bg-canvas/90 px-4 py-3 shadow-[0_-8px_24px_rgb(22_21_19_/_0.04)] backdrop-blur md:-mx-8 md:px-8">
         <div className="flex flex-wrap items-center gap-2">
           <Button type="submit" disabled={!dirty || saving}>
             {saving ? 'Saving…' : 'Save profile'}

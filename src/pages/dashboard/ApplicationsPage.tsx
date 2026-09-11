@@ -143,9 +143,9 @@ export function ApplicationsPage() {
           }
         />
       ) : (
-        <div className="overflow-hidden rounded-lg border border-border bg-surface">
+        <div className="overflow-hidden rounded-xl border border-border bg-surface shadow-card">
           <table className="w-full text-left text-sm">
-            <thead className="border-b border-border bg-surface-muted/60 text-xs text-ink-muted">
+            <thead className="border-b border-border bg-surface-muted/70 text-xs text-ink-muted">
               <tr>
                 <th className="px-4 py-2.5 font-medium">Company</th>
                 <th className="px-4 py-2.5 font-medium">Position</th>
@@ -158,16 +158,16 @@ export function ApplicationsPage() {
               {applications.map((application) => (
                 <tr
                   key={application.id}
-                  className="border-b border-border last:border-b-0"
+                  className="border-b border-border last:border-b-0 hover:bg-surface-muted/40"
                 >
-                  <td className="px-4 py-3 text-ink">
+                  <td className="px-4 py-3 font-medium text-ink">
                     {application.company || '—'}
                   </td>
                   <td className="px-4 py-3 text-ink">
                     {application.position || '—'}
                   </td>
                   <td className="px-4 py-3">
-                    <Badge>
+                    <Badge tone={statusTone(application.status)}>
                       {APPLICATION_STATUS_LABELS[application.status]}
                     </Badge>
                   </td>
@@ -302,4 +302,20 @@ export function ApplicationsPage() {
       </Modal>
     </div>
   );
+}
+
+function statusTone(status: ApplicationStatus) {
+  switch (status) {
+    case 'offer':
+      return 'success' as const;
+    case 'interview':
+    case 'online_assessment':
+    case 'applied':
+      return 'accent' as const;
+    case 'rejected':
+    case 'withdrawn':
+      return 'danger' as const;
+    default:
+      return 'neutral' as const;
+  }
 }

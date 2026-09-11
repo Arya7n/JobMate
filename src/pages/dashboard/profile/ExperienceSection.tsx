@@ -42,7 +42,7 @@ export function ExperienceSection({
           {value.map((entry, index) => (
             <div
               key={entry.id}
-              className="rounded-md border border-border bg-canvas/60 p-4"
+              className="rounded-xl border border-border bg-canvas/60 p-4"
             >
               <div className="mb-3 flex items-center justify-between gap-3">
                 <p className="text-xs font-medium text-ink-muted">

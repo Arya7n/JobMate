@@ -155,20 +155,25 @@ export function ResumesPage() {
           {resumes.map((resume) => (
             <div
               key={resume.id}
-              className="rounded-lg border border-border bg-surface p-4"
+              className="rounded-xl border border-border bg-surface p-4 shadow-card"
             >
               <div className="flex flex-wrap items-start justify-between gap-3">
-                <div>
-                  <p className="text-sm font-medium text-ink">{resume.name}</p>
-                  <p className="mt-1 text-xs text-ink-muted">
-                    {fileTypeLabel(resume.mimeType)} ·{' '}
-                    {formatFileSize(resume.sizeBytes)}
-                  </p>
-                  {resume.isDefault ? (
-                    <Badge tone="accent" className="mt-2">
-                      Default
-                    </Badge>
-                  ) : null}
+                <div className="flex items-start gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent-soft text-accent">
+                    <IconFile className="h-4 w-4" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-ink">{resume.name}</p>
+                    <p className="mt-1 text-xs text-ink-muted">
+                      {fileTypeLabel(resume.mimeType)} ·{' '}
+                      {formatFileSize(resume.sizeBytes)}
+                    </p>
+                    {resume.isDefault ? (
+                      <Badge tone="accent" className="mt-2">
+                        Default
+                      </Badge>
+                    ) : null}
+                  </div>
                 </div>
                 <div className="flex items-center gap-2">
                   <Button

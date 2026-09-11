@@ -129,7 +129,7 @@ export function SettingsPage() {
           </div>
         ) : (
           <Card className="md:max-w-2xl">
-            <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-md bg-accent-soft text-accent">
+            <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-accent-soft text-accent">
               <IconShield className="h-4 w-4" />
             </div>
             <CardTitle>Local-first by design</CardTitle>
